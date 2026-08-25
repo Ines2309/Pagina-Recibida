@@ -180,30 +180,54 @@
     color: var(--rosa-viejo);
   }
 
- .mensaje-final{
-  display:none; /* o flex si lo activas dinámicamente */
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  text-align:center;
-  font-family:'Playfair Display', serif;
-  font-style:italic;
-  font-size:1.3rem;
-  color: var(--rosa-fuerte);
-  padding: 20px;
-  background: var(--rosa-suave);
-  border-radius: 16px;
-  margin-bottom: 20px;
-}
-  .foto-final {
-  width: 100%;
-  max-width: 300px;
-  max-height: 250px;
-  object-fit: cover;
-  border-radius: 12px;
-  display: block;
-  margin: 0 auto;
-}
+  .mensaje-final{
+    display:none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align:center;
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-size:1.3rem;
+    color: var(--rosa-fuerte);
+    padding: 20px;
+    background: var(--rosa-suave);
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+
+  .foto-final{
+    width: 100%;
+    max-width: 300px;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+    margin: 0 auto;
+    border: 3px solid #fff;
+    box-shadow: 0 6px 16px rgba(201,123,142,0.25);
+  }
+
+  .video-wrap{
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    padding-top: 56.25%; /* proporción 16:9 */
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 3px solid #fff;
+    box-shadow: 0 6px 16px rgba(201,123,142,0.25);
+  }
+
+  .video-wrap iframe{
+    position: absolute;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    border:none;
+  }
+
   .galeria{
     display:grid;
     grid-template-columns: repeat(3, 1fr);
@@ -238,7 +262,7 @@
     letter-spacing: 0.5px;
   }
 
-  /* ===== TAB 2: LISTA PRIVADA ===== */
+  /* ===== TAB 2: MENSAJITOS ===== */
   .lista-header{
     display:flex;
     align-items:center;
@@ -375,6 +399,33 @@
     margin-bottom: 18px;
   }
 
+  .form-selector{
+    display:flex;
+    justify-content:center;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .form-selector button{
+    border: 1.5px solid var(--rosa-pastel);
+    background: #fff;
+    color: var(--rosa-viejo);
+    font-family:'Poppins', sans-serif;
+    font-weight:500;
+    font-size:0.85rem;
+    padding: 9px 18px;
+    border-radius: 999px;
+    cursor:pointer;
+    transition: all 0.25s ease;
+  }
+
+  .form-selector button.active{
+    background: linear-gradient(135deg, var(--rosa-fuerte), var(--rosa-viejo));
+    border-color: transparent;
+    color:#fff;
+    box-shadow: 0 4px 10px rgba(201,123,142,0.3);
+  }
+
   .iframe-wrap{
     border-radius: 18px;
     overflow:hidden;
@@ -493,7 +544,7 @@
 
   <nav class="tabs">
     <button class="tab-btn active" data-tab="tab1">⏳ Cuenta Regresiva</button>
-    <button class="tab-btn" data-tab="tab2">📝 Mensajitos </button>
+    <button class="tab-btn" data-tab="tab2">📝 Mensajitos</button>
     <button class="tab-btn" data-tab="tab3">💌 Formulario</button>
   </nav>
 
@@ -511,23 +562,20 @@
         </div>
 
         <div class="mensaje-final" id="mensajeFinal">
-          🎀 ¡ES HOY ES HOY ! EXITOS
+          🎀 ¡ES HOY ES HOY! EXITOS
           <img src="https://i.pinimg.com/1200x/5a/4a/c0/5a4ac079419a56d746e6f9b64aefb91f.jpg" alt="Imagen del día" class="foto-final">
         </div>
 
         <div class="galeria">
           <div class="foto-slot">
-            <!-- Reemplazá el src por tu imagen de Snoopy -->
             <img src="https://i.pinimg.com/736x/4b/1f/c7/4b1fc7f388d5afbdc81413705ed29596.jpg?text=Snoopy" alt="Snoopy">
             <div class="caption">🐾</div>
           </div>
           <div class="foto-slot">
-            <!-- Reemplazá el src por tu imagen de Taylor Swift -->
             <img src="https://i.pinimg.com/736x/70/fd/0e/70fd0ed2759a412a388de9a71c97f47b.jpg?text=Taylor" alt="Taylor Swift">
             <div class="caption">✨</div>
           </div>
           <div class="foto-slot">
-            <!-- Reemplazá el src por tu imagen de Santa Julia -->
             <img src="https://i.pinimg.com/736x/25/f3/28/25f328639c740db8c2fa1a2c0f943763.jpg" alt="Santa Julia">
             <div class="caption">🍷</div>
           </div>
@@ -539,14 +587,14 @@
     <section id="tab2" class="tab-content">
       <div class="card">
         <div class="lista-header">
-          <h2> Mensajes para Maga </h2>
+          <h2>Mensajes para Maga</h2>
           <span class="candado" id="candadoIcono">🔒</span>
         </div>
-        <p class="candado-msg" id="candadoMsg"> Pin de ingreso el día del evento formato DDMM</p>
+        <p class="candado-msg" id="candadoMsg">Escribí tu mensaje y tocá "Agregar" — te va a pedir el PIN del día del evento (formato DDMM).</p>
 
         <div class="form-agregar">
-          <input type="text" id="nuevoItem" placeholder="Escribí algo lindo..." disabled maxlength="120">
-          <button class="btn" id="btnAgregar" disabled>Agregar</button>
+          <input type="text" id="nuevoItem" placeholder="Escribí algo lindo..." maxlength="120">
+          <button class="btn" id="btnAgregar">Agregar</button>
         </div>
 
         <ul class="lista" id="lista"></ul>
@@ -559,6 +607,12 @@
       <div class="card form-contenedor">
         <h2>Un formulario para vos 💌</h2>
         <p class="sub">Completalo con cariño</p>
+
+        <div class="form-selector">
+          <button class="selector-btn active" data-form="tirada" id="btnTirada">🎉 Tirada</button>
+          <button class="selector-btn" data-form="fiesta" id="btnFiesta">🥳 Fiesta</button>
+        </div>
+
         <div class="iframe-wrap">
           <iframe id="googleForm" src="" title="Formulario"></iframe>
         </div>
@@ -588,16 +642,17 @@
   ========================================================= */
 
   // 1) Fecha objetivo de la cuenta regresiva (formato: año, mes-1, día, hora, min, seg)
-  const FECHA_OBJETIVO = new Date(new Date().getFullYear(), 7, 25, 0, 0, 0); 
-  // Nota: el mes 8 = septiembre (los meses en JS empiezan en 0).
-  // Si la fecha de este año ya pasó, se puede ajustar manualmente al año que quieras:
+  //    Mes 8 = septiembre (los meses en JS empiezan en 0, así que 8 = septiembre).
+  const FECHA_OBJETIVO = new Date(new Date().getFullYear(), 8, 9, 0, 0, 0);
+  // Si esa fecha de este año ya pasó, fijá el año a mano:
   // const FECHA_OBJETIVO = new Date(2026, 8, 9, 0, 0, 0);
 
-  // 2) PIN para poder agregar/borrar ítems de la lista privada
+  // 2) PIN para poder agregar/borrar mensajes
   const PIN_SECRETO = "0909"; // <-- CAMBIÁ ESTE PIN
 
-  // 3) Pegá acá el link de tu Google Form (el link "para compartir", modo embed)
-  const URL_DEL_FORMULARIO = "https://docs.google.com/forms/d/e/TU_ID_DE_FORMULARIO/viewform?embedded=true";
+  // 3) Pegá acá los links de tus Google Forms (el link "para compartir", modo embed)
+  const URL_FORM_TIRADA = "https://docs.google.com/forms/d/e/TU_ID_TIRADA/viewform?embedded=true";
+  const URL_FORM_FIESTA = "https://docs.google.com/forms/d/e/TU_ID_FIESTA/viewform?embedded=true";
 
   /* ========================================================= */
 
@@ -629,7 +684,7 @@
 
     if(distancia <= 0){
       countdownEl.style.display = 'none';
-      mensajeFinalEl.style.display = 'block';
+      mensajeFinalEl.style.display = 'flex';
       clearInterval(intervaloCountdown);
       return;
     }
@@ -648,9 +703,12 @@
   actualizarCountdown();
   const intervaloCountdown = setInterval(actualizarCountdown, 1000);
 
-  /* ---------- LISTA PRIVADA ---------- */
+  /* ---------- MENSAJITOS ---------- */
   const LS_KEY = 'lista_privada_items';
   let desbloqueado = false;
+  // Qué acción quedó pendiente mientras se pide el PIN: 'agregar' | 'borrar' | null
+  let accionPendiente = null;
+  let indexABorrar = null;
 
   const listaEl = document.getElementById('lista');
   const vacioMsg = document.getElementById('vacioMsg');
@@ -694,13 +752,14 @@
       const btnBorrar = document.createElement('button');
       btnBorrar.classList.add('borrar');
       btnBorrar.textContent = '✕';
-      btnBorrar.disabled = !desbloqueado;
       btnBorrar.addEventListener('click', () => {
-        if(!desbloqueado){ abrirModalPin('borrar'); return; }
-        const itemsActuales = cargarItems();
-        itemsActuales.splice(index, 1);
-        guardarItems(itemsActuales);
-        renderLista();
+        if(!desbloqueado){
+          accionPendiente = 'borrar';
+          indexABorrar = index;
+          abrirModalPin();
+          return;
+        }
+        borrarItem(index);
       });
 
       li.appendChild(checkbox);
@@ -720,36 +779,43 @@
     renderLista();
   }
 
+  function borrarItem(index){
+    const itemsActuales = cargarItems();
+    itemsActuales.splice(index, 1);
+    guardarItems(itemsActuales);
+    renderLista();
+  }
+
+  // El campo de texto queda SIEMPRE habilitado. El PIN se pide recién al confirmar.
   btnAgregar.addEventListener('click', () => {
-    if(!desbloqueado){ abrirModalPin('agregar'); return; }
+    if(!inputNuevo.value.trim()) return;
+    if(!desbloqueado){
+      accionPendiente = 'agregar';
+      abrirModalPin();
+      return;
+    }
     agregarItem();
   });
 
   inputNuevo.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter' && desbloqueado) agregarItem();
+    if(e.key === 'Enter') btnAgregar.click();
   });
 
   candadoIcono.addEventListener('click', () => {
     if(desbloqueado){
-      // volver a bloquear
       desbloqueado = false;
-      inputNuevo.disabled = true;
-      btnAgregar.disabled = true;
       candadoIcono.textContent = '🔒';
-      candadoMsg.textContent = 'Ingresá el PIN para agregar o borrar ítems.';
-      renderLista();
+      candadoMsg.textContent = 'Escribí tu mensaje y tocá "Agregar" — te va a pedir el PIN del día del evento (formato DDMM).';
     } else {
-      abrirModalPin('desbloquear');
+      accionPendiente = null;
+      abrirModalPin();
     }
   });
 
   function desbloquear(){
     desbloqueado = true;
-    inputNuevo.disabled = false;
-    btnAgregar.disabled = false;
     candadoIcono.textContent = '🔓';
     candadoMsg.textContent = 'Modo edición activado ✏️';
-    renderLista();
   }
 
   /* ---------- MODAL PIN ---------- */
@@ -768,12 +834,24 @@
 
   function cerrarModalPin(){
     modalPin.classList.remove('active');
+    accionPendiente = null;
+    indexABorrar = null;
   }
 
   pinConfirmar.addEventListener('click', () => {
     if(pinInput.value === PIN_SECRETO){
-      cerrarModalPin();
       desbloquear();
+      modalPin.classList.remove('active');
+
+      if(accionPendiente === 'agregar'){
+        agregarItem();
+      } else if(accionPendiente === 'borrar' && indexABorrar !== null){
+        borrarItem(indexABorrar);
+      } else {
+        renderLista();
+      }
+      accionPendiente = null;
+      indexABorrar = null;
     } else {
       pinError.style.display = 'block';
       pinInput.value = '';
@@ -792,9 +870,29 @@
 
   renderLista();
 
-  /* ---------- FORMULARIO ---------- */
-  document.getElementById('googleForm').src = URL_DEL_FORMULARIO;
-  document.getElementById('linkAlterno').href = URL_DEL_FORMULARIO.replace('?embedded=true','');
+  /* ---------- FORMULARIO (dos links: Tirada / Fiesta) ---------- */
+  const googleForm = document.getElementById('googleForm');
+  const linkAlterno = document.getElementById('linkAlterno');
+  const btnTirada = document.getElementById('btnTirada');
+  const btnFiesta = document.getElementById('btnFiesta');
+  const selectorBtns = document.querySelectorAll('.selector-btn');
+
+  function mostrarFormulario(url){
+    googleForm.src = url;
+    linkAlterno.href = url.replace('?embedded=true','');
+  }
+
+  selectorBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectorBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const url = btn.dataset.form === 'tirada' ? URL_FORM_TIRADA : URL_FORM_FIESTA;
+      mostrarFormulario(url);
+    });
+  });
+
+  // Formulario que se muestra por defecto al entrar
+  mostrarFormulario(URL_FORM_TIRADA);
 
 </script>
 </body>
