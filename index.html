@@ -549,10 +549,39 @@
     z-index:1;
   }
 
-  @media (max-width:420px){
+  /* =========================================================
+     RESPONSIVE — de pantalla más ancha a más angosta
+  ========================================================= */
+
+  /* Notebooks / pantallas grandes (y tablets tipo iPad en horizontal) */
+  @media (max-width:1200px){
+    main{ max-width: 560px; }
+  }
+
+  /* Tablets (iPad y similares) */
+  @media (max-width:1024px){
+    header h1{ font-size: 1.9rem; }
+    .card{ padding: 22px 18px; }
+  }
+
+  /* Celulares grandes / tablets chicas en vertical */
+  @media (max-width:768px){
+    body{ padding: 20px 12px 50px; }
+    main{ max-width: 100%; }
+    nav.tabs{ width:100%; justify-content:center; }
+    .countdown{ gap: 8px; }
+    .galeria{ gap: 8px; }
+    .muro-mensajes{ grid-template-columns: 1fr; }
+  }
+
+  /* Celulares chicos (Android angostos) */
+  @media (max-width:600px){
+    header h1{ font-size: 1.6rem; }
+    header p{ font-size: 0.75rem; }
+    nav.tabs button{ padding: 8px 12px; font-size: 0.78rem; }
     .countdown .unidad{ min-width: 62px; padding: 10px 6px; }
     .countdown .numero{ font-size:1.5rem; }
-    header h1{ font-size:1.6rem; }
+    .form-selector{ flex-wrap: wrap; }
   }
 </style>
 </head>
@@ -827,7 +856,7 @@
   if(firebaseListo){
     // Escucha en tiempo real: cualquier mensajito nuevo aparece para todos sin recargar
     mensajesRef.on('value', (snapshot) => {
-      estadoConexion.textContent = '🤍 Los mensajes son publicos ';
+      estadoConexion.textContent = '🤍 Conectado — todos ven los mismos mensajes';
       renderLista(snapshot.val());
     }, (error) => {
       console.error(error);
