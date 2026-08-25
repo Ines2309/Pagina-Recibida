@@ -642,10 +642,10 @@
     <section id="tab2" class="tab-content">
       <div class="card">
         <div class="lista-header">
-          <h2>Dejale un mensajito a Maga </h2>
+          <h2>Mensajes para Maga</h2>
           <span class="candado" id="candadoIcono" title="Acceso de edición">𓆩♡𓆪</span>
         </div>
-        <p class="candado-msg" id="candadoMsg">       🤍 </p>
+        <p class="candado-msg" id="candadoMsg">Dejale un mensajito a Maga 🤍 </p>
         <p class="estado-conexion" id="estadoConexion">Conectando…</p>
 
         <div class="form-agregar">
@@ -791,7 +791,6 @@
 
   /* ---------- MENSAJITOS (muro compartido con Firebase Realtime Database) ---------- */
   let desbloqueado = false;
-  let keyABorrar = null; // ahora usamos la key de Firebase, no un índice
 
   const listaEl = document.getElementById('lista');
   const vacioMsg = document.getElementById('vacioMsg');
@@ -804,6 +803,7 @@
 
   let mensajesRef = null;
   let firebaseListo = false;
+  let ultimoSnapshotVal = null; // guarda los mensajes para poder re-dibujar sin pedirle otra vez a Firebase
 
   try{
     firebase.initializeApp(firebaseConfig);
@@ -833,20 +833,16 @@
       autor.classList.add('autor-mensaje');
       autor.textContent = '– ' + (item.nombre || 'Anónimo');
 
-      const btnBorrar = document.createElement('button');
-      btnBorrar.classList.add('borrar');
-      btnBorrar.textContent = '✕';
-      btnBorrar.title = 'Borrar mensaje';
-      btnBorrar.addEventListener('click', () => {
-        if(!desbloqueado){
-          keyABorrar = key;
-          abrirModalPin();
-          return;
-        }
-        borrarItem(key);
-      });
+      // La "✕" para borrar solo se muestra cuando ya se desbloqueó con el PIN
+      if(desbloqueado){
+        const btnBorrar = document.createElement('button');
+        btnBorrar.classList.add('borrar');
+        btnBorrar.textContent = '✕';
+        btnBorrar.title = 'Borrar mensaje';
+        btnBorrar.addEventListener('click', () => borrarItem(key));
+        cardEl.appendChild(btnBorrar);
+      }
 
-      cardEl.appendChild(btnBorrar);
       cardEl.appendChild(texto);
       cardEl.appendChild(autor);
       listaEl.appendChild(cardEl);
@@ -856,8 +852,9 @@
   if(firebaseListo){
     // Escucha en tiempo real: cualquier mensajito nuevo aparece para todos sin recargar
     mensajesRef.on('value', (snapshot) => {
-      estadoConexion.textContent = 'Los mensajes son públicos';
-      renderLista(snapshot.val());
+      estadoConexion.textContent = '🤍 Conectado — todos ven los mismos mensajes';
+      ultimoSnapshotVal = snapshot.val();
+      renderLista(ultimoSnapshotVal);
     }, (error) => {
       console.error(error);
       estadoConexion.textContent = '⚠️ No se pudo conectar. Revisá la configuración de Firebase.';
@@ -895,12 +892,13 @@
   });
 
   // El candado es SOLO para habilitar el modo edición/borrado (uso del dueño de la página)
+  // La "✕" de cada mensaje solo aparece cuando desbloqueado === true
   candadoIcono.addEventListener('click', () => {
     if(desbloqueado){
       desbloqueado = false;
-      candadoMsg.textContent = 'Dejale un mensajito a Maga 🤍 (el candado es solo para editar/borrar)';
+      candadoMsg.textContent = 'Dejale un mensajito a Maga 🤍';
+      renderLista(ultimoSnapshotVal); // vuelve a dibujar sin las ✕
     } else {
-      keyABorrar = null;
       abrirModalPin();
     }
   });
@@ -908,6 +906,7 @@
   function desbloquear(){
     desbloqueado = true;
     candadoMsg.textContent = 'Modo edición activado ✏️ — ya podés borrar mensajes';
+    renderLista(ultimoSnapshotVal); // vuelve a dibujar mostrando las ✕
   }
 
   /* ---------- MODAL PIN ---------- */
@@ -926,18 +925,12 @@
 
   function cerrarModalPin(){
     modalPin.classList.remove('active');
-    keyABorrar = null;
   }
 
   pinConfirmar.addEventListener('click', () => {
     if(pinInput.value === PIN_SECRETO){
       desbloquear();
       modalPin.classList.remove('active');
-
-      if(keyABorrar !== null){
-        borrarItem(keyABorrar);
-      }
-      keyABorrar = null;
     } else {
       pinError.style.display = 'block';
       pinInput.value = '';
