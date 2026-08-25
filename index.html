@@ -642,10 +642,10 @@
     <section id="tab2" class="tab-content">
       <div class="card">
         <div class="lista-header">
-          <h2>Mensajes para Maga</h2>
+          <h2>Dejale un mensajito a Maga </h2>
           <span class="candado" id="candadoIcono" title="Acceso de edición">𓆩♡𓆪</span>
         </div>
-        <p class="candado-msg" id="candadoMsg">Dejale un mensajito a Maga 🤍 </p>
+        <p class="candado-msg" id="candadoMsg">       🤍 </p>
         <p class="estado-conexion" id="estadoConexion">Conectando…</p>
 
         <div class="form-agregar">
@@ -856,7 +856,7 @@
   if(firebaseListo){
     // Escucha en tiempo real: cualquier mensajito nuevo aparece para todos sin recargar
     mensajesRef.on('value', (snapshot) => {
-      estadoConexion.textContent = '🤍 Conectado — todos ven los mismos mensajes';
+      estadoConexion.textContent = 'Los mensajes son públicos';
       renderLista(snapshot.val());
     }, (error) => {
       console.error(error);
