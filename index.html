@@ -278,6 +278,14 @@
     margin-bottom: 16px;
   }
 
+  .estado-conexion{
+    text-align:center;
+    font-size:0.68rem;
+    color: var(--rosa-viejo);
+    opacity:0.8;
+    margin-bottom: 10px;
+  }
+
   .form-agregar{
     display:flex;
     flex-direction:column;
@@ -609,6 +617,7 @@
           <span class="candado" id="candadoIcono" title="Acceso de edición">𓆩♡𓆪</span>
         </div>
         <p class="candado-msg" id="candadoMsg">Dejale un mensajito a Maga 🤍 </p>
+        <p class="estado-conexion" id="estadoConexion">Conectando…</p>
 
         <div class="form-agregar">
           <div>
@@ -666,6 +675,10 @@
     </div>
   </div>
 
+<!-- ================= FIREBASE (para que los mensajitos se vean todos, en todos los dispositivos) ================= -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+
 <script>
   /* =========================================================
      CONFIGURACIÓN — EDITÁ ESTAS VARIABLES A TU GUSTO
@@ -683,6 +696,20 @@
   // 3) URLs de tus Google Forms (SOLO sin ?embedded=true)
   const URL_FORM_TIRADA = "https://forms.gle/RJpjs7D5aEQvVBRV6";
   const URL_FORM_FIESTA = "https://forms.gle/jcgYP74LqMpNTic68";
+
+  // 4) CONFIGURACIÓN DE FIREBASE — pegá acá tu configuración
+  //    Pasos: consola.firebase.google.com → Crear proyecto (gratis) →
+  //    Compilación → Realtime Database → Crear base de datos → modo de prueba →
+  //    ⚙️ Configuración del proyecto → tus apps → </> (Web) → copiar "firebaseConfig"
+  const firebaseConfig = {
+    apiKey: "AIzaSyCz2aB6EvgYcChWCoj6JvlCh-S9FTRre88",
+    authDomain: "egreso-ma.firebaseapp.com",
+    databaseURL: "https://egreso-ma-default-rtdb.firebaseio.com",
+    projectId: "egreso-ma",
+    storageBucket: "egreso-ma.firebasestorage.app",
+    messagingSenderId: "588579229506",
+    appId: "1:588579229506:web:7e4c9b916e89e18791c2db"
+  };
 
   /* ========================================================= */
 
@@ -733,10 +760,9 @@
   actualizarCountdown();
   const intervaloCountdown = setInterval(actualizarCountdown, 1000);
 
-  /* ---------- MENSAJITOS (muro de mensajes) ---------- */
-  const LS_KEY = 'lista_privada_items';
+  /* ---------- MENSAJITOS (muro compartido con Firebase Realtime Database) ---------- */
   let desbloqueado = false;
-  let indexABorrar = null; // solo se usa para la acción de borrar
+  let keyABorrar = null; // ahora usamos la key de Firebase, no un índice
 
   const listaEl = document.getElementById('lista');
   const vacioMsg = document.getElementById('vacioMsg');
@@ -745,22 +771,28 @@
   const btnAgregar = document.getElementById('btnAgregar');
   const candadoIcono = document.getElementById('candadoIcono');
   const candadoMsg = document.getElementById('candadoMsg');
+  const estadoConexion = document.getElementById('estadoConexion');
 
-  function cargarItems(){
-    const data = localStorage.getItem(LS_KEY);
-    return data ? JSON.parse(data) : [];
+  let mensajesRef = null;
+  let firebaseListo = false;
+
+  try{
+    firebase.initializeApp(firebaseConfig);
+    mensajesRef = firebase.database().ref('mensajes');
+    firebaseListo = true;
+  } catch(err){
+    console.error('Error inicializando Firebase:', err);
   }
 
-  function guardarItems(items){
-    localStorage.setItem(LS_KEY, JSON.stringify(items));
-  }
-
-  function renderLista(){
-    const items = cargarItems();
+  function renderLista(snapshotVal){
     listaEl.innerHTML = '';
+    const items = snapshotVal ? Object.entries(snapshotVal) : [];
+    // Orden por fecha de creación (más antiguo primero)
+    items.sort((a, b) => (a[1].timestamp || 0) - (b[1].timestamp || 0));
+
     vacioMsg.style.display = items.length === 0 ? 'block' : 'none';
 
-    items.forEach((item, index) => {
+    items.forEach(([key, item]) => {
       const cardEl = document.createElement('div');
       cardEl.classList.add('mensaje-card');
 
@@ -772,18 +804,17 @@
       autor.classList.add('autor-mensaje');
       autor.textContent = '– ' + (item.nombre || 'Anónimo');
 
-      // Borrar: siempre visible, pero pide PIN si todavía no está desbloqueado
       const btnBorrar = document.createElement('button');
       btnBorrar.classList.add('borrar');
       btnBorrar.textContent = '✕';
       btnBorrar.title = 'Borrar mensaje';
       btnBorrar.addEventListener('click', () => {
         if(!desbloqueado){
-          indexABorrar = index;
+          keyABorrar = key;
           abrirModalPin();
           return;
         }
-        borrarItem(index);
+        borrarItem(key);
       });
 
       cardEl.appendChild(btnBorrar);
@@ -793,24 +824,36 @@
     });
   }
 
+  if(firebaseListo){
+    // Escucha en tiempo real: cualquier mensajito nuevo aparece para todos sin recargar
+    mensajesRef.on('value', (snapshot) => {
+      estadoConexion.textContent = '🤍 Conectado — todos ven los mismos mensajes';
+      renderLista(snapshot.val());
+    }, (error) => {
+      console.error(error);
+      estadoConexion.textContent = '⚠️ No se pudo conectar. Revisá la configuración de Firebase.';
+    });
+  } else {
+    estadoConexion.textContent = '⚠️ Firebase no está configurado todavía.';
+  }
+
   // Agregar mensajito: LIBRE PARA TODOS, sin PIN
   function agregarItem(){
     const nombre = inputNombre.value.trim();
     const texto = inputNuevo.value.trim();
-    if(!texto) return;
-    const items = cargarItems();
-    items.push({ nombre: nombre || 'Anónimo', texto });
-    guardarItems(items);
+    if(!texto || !firebaseListo) return;
+    mensajesRef.push({
+      nombre: nombre || 'Anónimo',
+      texto: texto,
+      timestamp: Date.now()
+    });
     inputNombre.value = '';
     inputNuevo.value = '';
-    renderLista();
   }
 
-  function borrarItem(index){
-    const itemsActuales = cargarItems();
-    itemsActuales.splice(index, 1);
-    guardarItems(itemsActuales);
-    renderLista();
+  function borrarItem(key){
+    if(!firebaseListo) return;
+    mensajesRef.child(key).remove();
   }
 
   btnAgregar.addEventListener('click', agregarItem);
@@ -826,17 +869,15 @@
   candadoIcono.addEventListener('click', () => {
     if(desbloqueado){
       desbloqueado = false;
-      candadoIcono.textContent = '🔒';
       candadoMsg.textContent = 'Dejale un mensajito a Maga 🤍 (el candado es solo para editar/borrar)';
     } else {
-      indexABorrar = null;
+      keyABorrar = null;
       abrirModalPin();
     }
   });
 
   function desbloquear(){
     desbloqueado = true;
-    candadoIcono.textContent = '🔓';
     candadoMsg.textContent = 'Modo edición activado ✏️ — ya podés borrar mensajes';
   }
 
@@ -856,7 +897,7 @@
 
   function cerrarModalPin(){
     modalPin.classList.remove('active');
-    indexABorrar = null;
+    keyABorrar = null;
   }
 
   pinConfirmar.addEventListener('click', () => {
@@ -864,10 +905,10 @@
       desbloquear();
       modalPin.classList.remove('active');
 
-      if(indexABorrar !== null){
-        borrarItem(indexABorrar);
+      if(keyABorrar !== null){
+        borrarItem(keyABorrar);
       }
-      indexABorrar = null;
+      keyABorrar = null;
     } else {
       pinError.style.display = 'block';
       pinInput.value = '';
@@ -883,8 +924,6 @@
   modalPin.addEventListener('click', (e) => {
     if(e.target === modalPin) cerrarModalPin();
   });
-
-  renderLista();
 
   /* ---------- FORMULARIO (dos links: Tirada / Fiesta) ---------- */
   const linkAlterno = document.getElementById('linkAlterno');
