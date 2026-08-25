@@ -827,7 +827,7 @@
   if(firebaseListo){
     // Escucha en tiempo real: cualquier mensajito nuevo aparece para todos sin recargar
     mensajesRef.on('value', (snapshot) => {
-      estadoConexion.textContent = '🤍 ;
+      estadoConexion.textContent = '🤍 todos ven los mismos mensajes';
       renderLista(snapshot.val());
     }, (error) => {
       console.error(error);
