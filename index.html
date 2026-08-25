@@ -208,7 +208,6 @@
     box-shadow: 0 6px 16px rgba(201,123,142,0.25);
   }
 
-
   .galeria{
     display:grid;
     grid-template-columns: repeat(3, 1fr);
@@ -248,7 +247,7 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    margin-bottom: 18px;
+    margin-bottom: 6px;
   }
 
   .lista-header h2{
@@ -259,30 +258,57 @@
   }
 
   .candado{
-    font-size:1.3rem;
+    font-size:1.2rem;
     cursor:pointer;
     user-select:none;
+    opacity:0.55;
+    transition: opacity 0.2s ease;
+  }
+  .candado:hover{ opacity:1; }
+
+  .candado-msg{
+    text-align:center;
+    font-size:0.72rem;
+    color: var(--rosa-viejo);
+    margin-bottom: 16px;
   }
 
   .form-agregar{
     display:flex;
+    flex-direction:column;
     gap:8px;
-    margin-bottom: 18px;
+    margin-bottom: 22px;
+    background: rgba(255,255,255,0.6);
+    border: 1.5px dashed var(--rosa-pastel);
+    border-radius: 16px;
+    padding: 14px;
   }
 
-  .form-agregar input[type="text"]{
-    flex:1;
+  .form-agregar input[type="text"],
+  .form-agregar textarea{
+    width:100%;
     padding: 10px 14px;
-    border-radius: 999px;
+    border-radius: 14px;
     border: 1.5px solid var(--rosa-pastel);
     background: #fff;
     font-family:'Poppins', sans-serif;
     font-size:0.85rem;
     outline:none;
     color: var(--texto);
+    resize: none;
   }
-  .form-agregar input[type="text"]:focus{
+  .form-agregar input[type="text"]:focus,
+  .form-agregar textarea:focus{
     border-color: var(--rosa-fuerte);
+  }
+
+  .form-agregar .campo-label{
+    font-size:0.7rem;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color: var(--rosa-viejo);
+    margin-bottom:2px;
+    display:block;
   }
 
   .btn{
@@ -297,57 +323,85 @@
     cursor:pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 4px 10px rgba(201,123,142,0.3);
+    align-self:center;
   }
   .btn:hover{ transform: translateY(-2px); }
   .btn:disabled{ opacity:0.5; cursor:not-allowed; transform:none; }
 
-  ul.lista{
-    list-style:none;
-    display:flex;
-    flex-direction:column;
-    gap: 10px;
+  /* Muro de mensajitos estilo "notitas" */
+  .muro-mensajes{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 6px 4px 4px;
   }
 
-  ul.lista li{
-    display:flex;
-    align-items:center;
-    gap: 10px;
-    background: #fff;
-    border-radius: 14px;
-    padding: 12px 14px;
-    box-shadow: 0 2px 6px rgba(201,123,142,0.15);
-    border: 1px solid rgba(216,167,177,0.3);
+  @media (min-width:520px){
+    .muro-mensajes{ grid-template-columns: 1fr 1fr; }
   }
 
-  ul.lista li.completado span.texto{
-    text-decoration: line-through;
-    color: var(--rosa-pastel);
+  .mensaje-card{
+    position:relative;
+    background:#fff;
+    border: 2.5px solid var(--rosa-pastel);
+    border-radius: 16px;
+    padding: 20px 18px 16px;
+    box-shadow: 0 6px 14px rgba(201,123,142,0.2);
+    transition: transform 0.2s ease;
+  }
+  .mensaje-card:nth-child(4n+1){ transform: rotate(-2deg); }
+  .mensaje-card:nth-child(4n+2){ transform: rotate(1.5deg); }
+  .mensaje-card:nth-child(4n+3){ transform: rotate(-1deg); }
+  .mensaje-card:nth-child(4n+4){ transform: rotate(2deg); }
+  .mensaje-card:hover{ transform: scale(1.03) rotate(0deg); }
+
+  .mensaje-card::before{
+    content:"";
+    position:absolute;
+    top:-10px;
+    left:50%;
+    transform: translateX(-50%) rotate(-4deg);
+    width: 46px;
+    height: 18px;
+    background: var(--rosa-suave);
+    border: 1.5px solid var(--rosa-pastel);
+    border-radius: 3px;
+    opacity:0.9;
   }
 
-  ul.lista li input[type="checkbox"]{
-    accent-color: var(--rosa-fuerte);
-    width:18px; height:18px;
-    cursor:pointer;
-    flex-shrink:0;
-  }
-
-  ul.lista li span.texto{
-    flex:1;
-    font-size:0.9rem;
+  .mensaje-card .texto-mensaje{
+    font-family:'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height:1.5;
+    color: var(--texto);
     word-break: break-word;
+    white-space: pre-wrap;
   }
 
-  ul.lista li .borrar{
+  .mensaje-card .autor-mensaje{
+    display:block;
+    margin-top: 12px;
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size: 0.78rem;
+    color: var(--rosa-fuerte);
+    text-align:right;
+  }
+
+  .mensaje-card .borrar{
+    position:absolute;
+    top: 8px;
+    right: 10px;
     background:none;
     border:none;
     color: var(--rosa-viejo);
-    font-size:1rem;
+    font-size:0.9rem;
     cursor:pointer;
-    opacity:0.6;
+    opacity:0.45;
     transition: opacity 0.2s ease;
-    flex-shrink:0;
   }
-  ul.lista li .borrar:hover{ opacity:1; }
+  .mensaje-card .borrar:hover{ opacity:1; }
 
   .vacio{
     text-align:center;
@@ -355,13 +409,6 @@
     font-style:italic;
     font-size:0.85rem;
     padding: 20px 0;
-  }
-
-  .candado-msg{
-    text-align:center;
-    font-size:0.75rem;
-    color: var(--rosa-viejo);
-    margin-bottom: 12px;
   }
 
   /* ===== TAB 3: FORMULARIO ===== */
@@ -554,16 +601,23 @@
       <div class="card">
         <div class="lista-header">
           <h2>Mensajes para Maga</h2>
-          <span class="candado" id="candadoIcono">🔒</span>
+          <span class="candado" id="candadoIcono" title="Acceso de edición">🔒</span>
         </div>
-        <p class="candado-msg" id="candadoMsg">Escribí tu mensaje y tocá "Agregar" — te va a pedir el PIN del día del evento (formato DDMM).</p>
+        <p class="candado-msg" id="candadoMsg">Dejale un mensajito a Maga 🤍 (el candado es solo para editar/borrar)</p>
 
         <div class="form-agregar">
-          <input type="text" id="nuevoItem" placeholder="Escribí algo lindo..." maxlength="120">
-          <button class="btn" id="btnAgregar">Agregar</button>
+          <div>
+            <span class="campo-label">Nombre:</span>
+            <input type="text" id="nuevoNombre" placeholder="Tu nombre" maxlength="40">
+          </div>
+          <div>
+            <span class="campo-label">Mensaje:</span>
+            <textarea id="nuevoItem" placeholder="Escribí algo lindo..." maxlength="220" rows="3"></textarea>
+          </div>
+          <button class="btn" id="btnAgregar">Agregar mensajito 💌</button>
         </div>
 
-        <ul class="lista" id="lista"></ul>
+        <div class="muro-mensajes" id="lista"></div>
         <p class="vacio" id="vacioMsg">Todavía no hay nada por acá 🤍</p>
       </div>
     </section>
@@ -594,7 +648,7 @@
 
   <footer>💗💗💗</footer>
 
-  <!-- MODAL PIN -->
+  <!-- MODAL PIN (solo para editar/borrar mensajitos) -->
   <div class="modal-overlay" id="modalPin">
     <div class="modal-box">
       <h3>Ingresá el PIN 🔑</h3>
@@ -618,7 +672,7 @@
   // Si esa fecha de este año ya pasó, fijá el año a mano:
   // const FECHA_OBJETIVO = new Date(2026, 8, 9, 0, 0, 0);
 
-  // 2) PIN para poder agregar/borrar mensajes
+  // 2) PIN para poder BORRAR mensajitos (solo vos lo necesitás, agregar es libre para todos)
   const PIN_SECRETO = "0909"; // <-- CAMBIÁ ESTE PIN
 
   // 3) URLs de tus Google Forms (SOLO sin ?embedded=true)
@@ -674,15 +728,14 @@
   actualizarCountdown();
   const intervaloCountdown = setInterval(actualizarCountdown, 1000);
 
-  /* ---------- MENSAJITOS ---------- */
+  /* ---------- MENSAJITOS (muro de mensajes) ---------- */
   const LS_KEY = 'lista_privada_items';
   let desbloqueado = false;
-  // Qué acción quedó pendiente mientras se pide el PIN: 'agregar' | 'borrar' | null
-  let accionPendiente = null;
-  let indexABorrar = null;
+  let indexABorrar = null; // solo se usa para la acción de borrar
 
   const listaEl = document.getElementById('lista');
   const vacioMsg = document.getElementById('vacioMsg');
+  const inputNombre = document.getElementById('nuevoNombre');
   const inputNuevo = document.getElementById('nuevoItem');
   const btnAgregar = document.getElementById('btnAgregar');
   const candadoIcono = document.getElementById('candadoIcono');
@@ -703,29 +756,24 @@
     vacioMsg.style.display = items.length === 0 ? 'block' : 'none';
 
     items.forEach((item, index) => {
-      const li = document.createElement('li');
-      if(item.hecho) li.classList.add('completado');
+      const cardEl = document.createElement('div');
+      cardEl.classList.add('mensaje-card');
 
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = item.hecho;
-      checkbox.addEventListener('change', () => {
-        const itemsActuales = cargarItems();
-        itemsActuales[index].hecho = checkbox.checked;
-        guardarItems(itemsActuales);
-        renderLista();
-      });
+      const texto = document.createElement('p');
+      texto.classList.add('texto-mensaje');
+      texto.textContent = item.texto;
 
-      const span = document.createElement('span');
-      span.classList.add('texto');
-      span.textContent = item.texto;
+      const autor = document.createElement('span');
+      autor.classList.add('autor-mensaje');
+      autor.textContent = '– ' + (item.nombre || 'Anónimo');
 
+      // Borrar: siempre visible, pero pide PIN si todavía no está desbloqueado
       const btnBorrar = document.createElement('button');
       btnBorrar.classList.add('borrar');
       btnBorrar.textContent = '✕';
+      btnBorrar.title = 'Borrar mensaje';
       btnBorrar.addEventListener('click', () => {
         if(!desbloqueado){
-          accionPendiente = 'borrar';
           indexABorrar = index;
           abrirModalPin();
           return;
@@ -733,19 +781,22 @@
         borrarItem(index);
       });
 
-      li.appendChild(checkbox);
-      li.appendChild(span);
-      li.appendChild(btnBorrar);
-      listaEl.appendChild(li);
+      cardEl.appendChild(btnBorrar);
+      cardEl.appendChild(texto);
+      cardEl.appendChild(autor);
+      listaEl.appendChild(cardEl);
     });
   }
 
+  // Agregar mensajito: LIBRE PARA TODOS, sin PIN
   function agregarItem(){
+    const nombre = inputNombre.value.trim();
     const texto = inputNuevo.value.trim();
     if(!texto) return;
     const items = cargarItems();
-    items.push({ texto, hecho:false });
+    items.push({ nombre: nombre || 'Anónimo', texto });
     guardarItems(items);
+    inputNombre.value = '';
     inputNuevo.value = '';
     renderLista();
   }
@@ -757,28 +808,23 @@
     renderLista();
   }
 
-  // El campo de texto queda SIEMPRE habilitado. El PIN se pide recién al confirmar.
-  btnAgregar.addEventListener('click', () => {
-    if(!inputNuevo.value.trim()) return;
-    if(!desbloqueado){
-      accionPendiente = 'agregar';
-      abrirModalPin();
-      return;
-    }
-    agregarItem();
-  });
+  btnAgregar.addEventListener('click', agregarItem);
 
   inputNuevo.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter') btnAgregar.click();
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      agregarItem();
+    }
   });
 
+  // El candado es SOLO para habilitar el modo edición/borrado (uso del dueño de la página)
   candadoIcono.addEventListener('click', () => {
     if(desbloqueado){
       desbloqueado = false;
       candadoIcono.textContent = '🔒';
-      candadoMsg.textContent = 'Escribí tu mensaje y tocá "Agregar" — te va a pedir el PIN del día del evento (formato DDMM).';
+      candadoMsg.textContent = 'Dejale un mensajito a Maga 🤍 (el candado es solo para editar/borrar)';
     } else {
-      accionPendiente = null;
+      indexABorrar = null;
       abrirModalPin();
     }
   });
@@ -786,7 +832,7 @@
   function desbloquear(){
     desbloqueado = true;
     candadoIcono.textContent = '🔓';
-    candadoMsg.textContent = 'Modo edición activado ✏️';
+    candadoMsg.textContent = 'Modo edición activado ✏️ — ya podés borrar mensajes';
   }
 
   /* ---------- MODAL PIN ---------- */
@@ -805,7 +851,6 @@
 
   function cerrarModalPin(){
     modalPin.classList.remove('active');
-    accionPendiente = null;
     indexABorrar = null;
   }
 
@@ -814,14 +859,9 @@
       desbloquear();
       modalPin.classList.remove('active');
 
-      if(accionPendiente === 'agregar'){
-        agregarItem();
-      } else if(accionPendiente === 'borrar' && indexABorrar !== null){
+      if(indexABorrar !== null){
         borrarItem(indexABorrar);
-      } else {
-        renderLista();
       }
-      accionPendiente = null;
       indexABorrar = null;
     } else {
       pinError.style.display = 'block';
