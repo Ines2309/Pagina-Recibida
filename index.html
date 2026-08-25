@@ -407,21 +407,6 @@
     box-shadow: 0 4px 10px rgba(201,123,142,0.3);
   }
 
-  .iframe-wrap{
-    border-radius: 18px;
-    overflow:hidden;
-    border: 2px solid var(--rosa-pastel);
-    box-shadow: var(--sombra);
-    background:#fff;
-  }
-
-  .iframe-wrap iframe{
-    width:100%;
-    height: 560px;
-    border:none;
-    display:block;
-  }
-
   .link-alterno{
     display:block;
     text-align:center;
@@ -596,12 +581,12 @@
 
         <div style="text-align:center; padding: 40px 20px; background: var(--rosa-suave); border-radius: 18px; margin-bottom: 20px;">
           <p style="font-size: 0.9rem; color: var(--rosa-viejo); margin-bottom: 15px;">
-              Hacé clic para abrir el formulario 👇
-				  </p>
- 					 <button class="btn" id="btnAbrirFormulario" style="font-size: 1rem; padding: 14px 28px;">
-   				 📋 Abrir Formulario
-				  </button>
-				</div>
+            Hacé clic para abrir el formulario 👇
+          </p>
+          <button class="btn" id="btnAbrirFormulario" style="font-size: 1rem; padding: 14px 28px;">
+            📋 Abrir Formulario
+          </button>
+        </div>
         <a class="link-alterno" id="linkAlterno" href="#" target="_blank" rel="noopener">Abrir en una pestaña nueva ↗</a>
       </div>
     </section>
@@ -636,9 +621,9 @@
   // 2) PIN para poder agregar/borrar mensajes
   const PIN_SECRETO = "0909"; // <-- CAMBIÁ ESTE PIN
 
-  // 3) Pegá acá los links de tus Google Forms (el link "para compartir", modo embed)
-  const URL_FORM_TIRADA = "https://forms.gle/RJpjs7D5aEQvVBRV6?embedded=true";
-  const URL_FORM_FIESTA = "https://forms.gle/jcgYP74LqMpNTic68?embedded=true";
+  // 3) URLs de tus Google Forms (SOLO sin ?embedded=true)
+  const URL_FORM_TIRADA = "https://forms.gle/RJpjs7D5aEQvVBRV6";
+  const URL_FORM_FIESTA = "https://forms.gle/jcgYP74LqMpNTic68";
 
   /* ========================================================= */
 
@@ -857,28 +842,30 @@
   renderLista();
 
   /* ---------- FORMULARIO (dos links: Tirada / Fiesta) ---------- */
-  const googleForm = document.getElementById('googleForm');
   const linkAlterno = document.getElementById('linkAlterno');
   const btnTirada = document.getElementById('btnTirada');
   const btnFiesta = document.getElementById('btnFiesta');
+  const btnAbrirFormulario = document.getElementById('btnAbrirFormulario');
   const selectorBtns = document.querySelectorAll('.selector-btn');
 
-  function mostrarFormulario(url){
-    googleForm.src = url;
-    linkAlterno.href = url.replace('?embedded=true','');
-  }
+  let formularioActual = URL_FORM_TIRADA;
 
   selectorBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       selectorBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const url = btn.dataset.form === 'tirada' ? URL_FORM_TIRADA : URL_FORM_FIESTA;
-      mostrarFormulario(url);
+      formularioActual = btn.dataset.form === 'tirada' ? URL_FORM_TIRADA : URL_FORM_FIESTA;
+      linkAlterno.href = formularioActual;
     });
   });
 
-  // Formulario que se muestra por defecto al entrar
-  mostrarFormulario(URL_FORM_TIRADA);
+  // Abrir formulario en nueva pestaña
+  btnAbrirFormulario.addEventListener('click', () => {
+    window.open(formularioActual, '_blank');
+  });
+
+  // Configurar link alterno por defecto
+  linkAlterno.href = URL_FORM_TIRADA;
 
 </script>
 </body>
