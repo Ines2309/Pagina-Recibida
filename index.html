@@ -180,19 +180,29 @@
     color: var(--rosa-viejo);
   }
 
-  .mensaje-final{
-    display:none;
-    text-align:center;
-    font-family:'Playfair Display', serif;
-    font-style:italic;
-    font-size:1.3rem;
-    color: var(--rosa-fuerte);
-    padding: 20px;
-    background: var(--rosa-suave);
-    border-radius: 16px;
-    margin-bottom: 20px;
-  }
-
+ .mensaje-final{
+  display:none; /* o flex si lo activas dinámicamente */
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align:center;
+  font-family:'Playfair Display', serif;
+  font-style:italic;
+  font-size:1.3rem;
+  color: var(--rosa-fuerte);
+  padding: 20px;
+  background: var(--rosa-suave);
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+  .foto-final {
+  width: 100%;
+  max-width: 300px;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
   .galeria{
     display:grid;
     grid-template-columns: repeat(3, 1fr);
