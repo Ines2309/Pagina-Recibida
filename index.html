@@ -244,20 +244,25 @@
 
   /* ===== TAB 2: MENSAJITOS ===== */
   .lista-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
     margin-bottom: 6px;
   }
 
   .lista-header h2{
+    grid-column: 2;
+    text-align: center;
     font-family:'Playfair Display', serif;
     font-style:italic;
     color: var(--rosa-fuerte);
     font-size:1.3rem;
+    margin: 0;
   }
 
   .candado{
+    grid-column: 3;
+    justify-self: end;
     font-size:1.2rem;
     cursor:pointer;
     user-select:none;
